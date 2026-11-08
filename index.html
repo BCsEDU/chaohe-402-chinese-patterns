@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>國語短語與句型教學互動網（第七課～第十二課）</title>
+<style>
+  :root {
+    --bg: #eef4fa;
+    --surface: #ffffff;
+    --surface-sub: #f8fafc;
+    --primary: #1e40af;
+    --primary-hover: #1d4ed8;
+    --primary-light: #dbeafe;
+    --accent: #d97706;
+    --accent-light: #fef3c7;
+    --text: #0f172a;
+    --text-muted: #475569;
+    --border: #cbd5e1;
+    --correct-bg: #dcfce7;
+    --correct-border: #16a34a;
+    --correct-text: #14532d;
+    --wrong-bg: #fee2e2;
+    --wrong-border: #dc2626;
+    --wrong-text: #7f1d1d;
+    --font-scale: 1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    width: 100%;
+    min-height: 100vh;
+    font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* 頂部導覽列 */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #1e3a8a;
+    color: #fff;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+  }
+
+  .brand-badge {
+    background: #fbbf24;
+    color: #1e3a8a;
+    font-weight: 900;
+    font-size: 1.15rem;
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+
+  .brand-title {
+    font-size: 1.55rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+  }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .tool-btn {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-size: 1.08rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tool-btn:hover {
+    background: rgba(255, 255, 255, 0.28);
+    transform: translateY(-1px);
+  }
+
+  .tool-btn.active {
+    background: #fbbf24;
+    color: #1e3a8a;
+    border-color: #fbbf24;
+  }
+
+  main {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 26px 24px 64px;
+  }
+
+  /* 首頁：課次選擇畫面 */
+  #home-view {
+    display: block;
+  }
+
+  .hero-banner {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: #fff;
+    border-radius: 24px;
+    padding: 34px 40px;
+    margin-bottom: 30px;
+    box-shadow: 0 12px 28px rgba(30, 64, 175, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .hero-banner h1 {
+    font-size: calc(2.3rem * var(--font-scale));
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+
+  .hero-banner p {
+    font-size: calc(1.3rem * var(--font-scale));
+    color: #dbeafe;
+    font-weight: 600;
+  }
+
+  .lesson-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 24px;
+  }
+
+  .lesson-card {
+    background: var(--surface);
+    border: 3px solid #cbd5e1;
+    border-radius: 22px;
+    padding: 28px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lesson-card.ready {
+    border-color: #3b82f6;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  }
+
+  .lesson-card.ready:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 32px rgba(30, 64, 175, 0.16);
+    border-color: #1d4ed8;
+  }
+
+  .lesson-card.locked {
+    background: #f1f5f9;
+    border-style: dashed;
+    opacity: 0.78;
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .lesson-tag {
+    font-size: calc(1.2rem * var(--font-scale));
+    font-weight: 900;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  .lesson-card.locked .lesson-tag {
+    background: #e2e8f0;
+    color: #64748b;
+  }
+
+  .status-pill {
+    font-size: 1.05rem;
+    font-weight: 800;
+    padding: 5px 14px;
+    border-radius: 999px;
+  }
+
+  .status-pill.ready {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  .status-pill.soon {
+    background: #e2e8f0;
+    color: #475569;
+  }
+
+  .lesson-name {
+    font-size: calc(2rem * var(--font-scale));
+    font-weight: 900;
+    color: var(--text);
+  }
+
+  .lesson-desc {
+    font-size: calc(1.18rem * var(--font-scale));
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .feature-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .feature-chip {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.98rem;
+    font-weight: 700;
+  }
+
+  .start-btn {
+    margin-top: 6px;
+    background: #1e40af;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 22px;
+    font-size: calc(1.3rem * var(--font-scale));
+    font-weight: 900;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s;
+  }
+
+  .lesson-card.ready:hover .start-btn {
+    background: #1d4ed8;
+  }
+
+  .lesson-card.locked .start-btn {
+    background: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+  }
+
+  /* 課程主教學畫面 */
+  #lesson-view {
+    display: none;
+  }
+
+  /* 課堂模式切換分頁列 */
+  .module-nav {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 16px 22px;
+    margin-bottom: 24px;
+    border: 2.5px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  }
+
+  .module-lesson-title {
+    font-size: calc(1.8rem * var(--font-scale));
+    font-weight: 900;
+    color: #1e3a8a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .module-tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .module-tab-btn {
+    padding: 12px 22px;
+    border-radius: 14px;
+    font-size: calc(1.22rem * var(--font-scale));
+    font-weight: 900;
+    border: 2.5px solid #cbd5e1;
+    background: #f8fafc;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .module-tab-btn:hover {
+    border-color: #3b82f6;
+    color: #1e40af;
+    background: #eff6ff;
+  }
+
+  .module-tab-btn.active {
+    background: #1e40af;
+    color: #fff;
+    border-color: #1e3a8a;
+    box-shadow: 0 6px 14px rgba(30, 64, 175, 0.25);
+  }
+
+  .tab-panel {
+    display: none;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .tab-panel.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* =========================================
+     分頁一：課文自然段定位與對照
+     ========================================= */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+
+  .target-summary-card {
+    background: #fff;
+    border: 3px solid #cbd5e1;
+    border-radius: 18px;
+    padding: 20px 22px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .target-summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
+  }
+
+  .target-summary-card.type-1 { border-left: 10px solid #2563eb; }
+  .target-summary-card.type-2 { border-left: 10px solid #059669; }
+  .target-summary-card.type-3 { border-left: 10px solid #d97706; }
+
+  .para-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: calc(1.1rem * var(--font-scale));
+    font-weight: 900;
+    padding: 4px 14px;
+    border-radius: 999px;
+    width: fit-content;
+  }
+
+  .para-badge.p-blue { background: #dbeafe; color: #1e40af; }
+  .para-badge.p-green { background: #d1fae5; color: #065f46; }
+  .para-badge.p-amber { background: #fef3c7; color: #92400e; }
+
+  .summary-pattern-title {
+    font-size: calc(1.28rem * var(--font-scale));
+    font-weight: 900;
+    color: #0f172a;
+  }
+
+  .summary-sentence {
+    font-size: calc(1.38rem * var(--font-scale));
+    font-weight: 800;
+    color: #1e3a8a;
+    background: #f8fafc;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1.5px dashed #94a3b8;
+  }
+
+  .text-reader-box {
+    background: #fff;
+    border: 3px solid #cbd5e1;
+    border-radius: 22px;
+    padding: 30px 36px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+  }
+
+  .reader-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .reader-title {
+    font-size: calc(1.85rem * var(--font-scale));
+    font-weight: 900;
+    color: #0f172a;
+  }
+
+  .paragraph-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 18px 20px;
+    border-radius: 16px;
+    margin-bottom: 14px;
+    border: 2px solid transparent;
+    background: #f8fafc;
+    transition: all 0.25s ease;
+  }
+
+  .paragraph-row.has-target {
+    background: #fff;
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  }
+
+  .paragraph-row.active-focus {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+  }
+
+  .para-num-tag {
+    flex-shrink: 0;
+    background: #334155;
+    color: #fff;
+    font-weight: 900;
+    font-size: calc(1.15rem * var(--font-scale));
+    padding: 6px 14px;
+    border-radius: 10px;
+    min-width: 118px;
+    text-align: center;
+  }
+
+  .paragraph-row.has-target .para-num-tag {
+    background: #1e40af;
+  }
+
+  .para-content {
+    font-size: calc(1.55rem * var(--font-scale));
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.75;
+    flex: 1;
+  }
+
+  .target-highlight {
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline;
+  }
+
+  .target-highlight.hl-1 {
+    background: #dbeafe;
+    color: #1e3a8a;
+    border-bottom: 4px solid #2563eb;
+  }
+
+  .target-highlight.hl-2 {
+    background: #d1fae5;
+    color: #064e3b;
+    border-bottom: 4px solid #059669;
+  }
+
+  .target-highlight.hl-3 {
+    background: #fef3c7;
+    color: #78350f;
+    border-bottom: 4px solid #d97706;
+  }
+
+  .target-highlight:hover {
+    filter: brightness(0.95);
+  }
+
+  .jump-analyze-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 10px;
+    padding: 4px 12px;
+    font-size: calc(1.05rem * var(--font-scale));
+    font-weight: 900;
+    background: #1e40af;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+
+  .jump-analyze-btn:hover {
+    background: #1d4ed8;
+  }
+
+  /* =========================================
+     分頁二 & 三：短語句型拆解 + 3情境造句
+     ========================================= */
+  .pattern-selector-bar {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .pattern-pill-btn {
+    flex: 1;
+    min-width: 260px;
+    background: #fff;
+    border: 3px solid #cbd5e1;
+    border-radius: 18px;
+    padding: 16px 20px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .pattern-pill-btn:hover {
+    border-color: #60a5fa;
+    background: #f8fafc;
+  }
+
+  .pattern-pill-btn.active {
+    border-color: #1e40af;
+    background: #eff6ff;
+    box-shadow: 0 8px 20px rgba(30, 64, 175, 0.14);
+  }
+
+  .pill-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .pill-num {
+    font-size: calc(1.1rem * var(--font-scale));
+    font-weight: 900;
+    color: #1e40af;
+    background: #dbeafe;
+    padding: 3px 12px;
+    border-radius: 999px;
+  }
+
+  .pill-loc {
+    font-size: calc(1rem * var(--font-scale));
+    font-weight: 800;
+    color: #b45309;
+    background: #fef3c7;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  .pill-formula {
+    font-size: calc(1.3rem * var(--font-scale));
+    font-weight: 900;
+    color: #0f172a;
+  }
+
+  /* 拆解舞台卡片 */
+  .stage-panel {
+    background: #fff;
+    border: 3px solid #cbd5e1;
+    border-radius: 24px;
+    padding: 30px 34px;
+    margin-bottom: 26px;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+  }
+
+  .stage-header-bar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+    border-bottom: 2.5px solid #e2e8f0;
+  }
+
+  .formula-banner {
+    font-size: calc(1.75rem * var(--font-scale));
+    font-weight: 900;
+    color: #1e3a8a;
+    line-height: 1.4;
+  }
+
+  .context-quote-box {
+    background: #f8fafc;
+    border-left: 6px solid #2563eb;
+    padding: 16px 20px;
+    border-radius: 0 14px 14px 0;
+    margin-bottom: 24px;
+    font-size: calc(1.4rem * var(--font-scale));
+    font-weight: 700;
+    color: #334155;
+  }
+
+  .context-quote-box strong {
+    color: #1e40af;
+    background: #dbeafe;
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+
+  /* 結構積木拆解列 */
+  .mask-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+
+  .mask-btn {
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: calc(1.12rem * var(--font-scale));
+    font-weight: 900;
+    border: 2px solid #cbd5e1;
+    background: #f8fafc;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .mask-btn:hover {
+    border-color: #2563eb;
+    background: #eff6ff;
+  }
+
+  .mask-btn.active {
+    background: #f59e0b;
+    color: #fff;
+    border-color: #d97706;
+  }
+
+  .example-block-card {
+    background: #f8fafc;
+    border: 2.5px solid #cbd5e1;
+    border-radius: 20px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+  }
+
+  .example-label {
+    font-size: calc(1.2rem * var(--font-scale));
+    font-weight: 900;
+    color: #475569;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .chunks-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .syntax-chunk {
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2.5px solid #94a3b8;
+    background: #fff;
+    min-width: 96px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    user-select: none;
+  }
+
+  .syntax-chunk:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.1);
+  }
+
+  .chunk-role {
+    font-size: calc(1.05rem * var(--font-scale));
+    font-weight: 900;
+    padding: 6px 12px;
+    border-bottom: 2px solid inherit;
+    white-space: nowrap;
+  }
+
+  .chunk-word {
+    font-size: calc(1.85rem * var(--font-scale));
+    font-weight: 900;
+    padding: 14px 18px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .syntax-chunk.masked-role .chunk-role {
+    color: transparent;
+    background: repeating-linear-gradient(45deg, #cbd5e1, #cbd5e1 8px, #94a3b8 8px, #94a3b8 16px);
+    position: relative;
+  }
+  .syntax-chunk.masked-role .chunk-role::after {
+    content: "❓ 點擊看詞性";
+    color: #0f172a;
+    font-size: 0.95rem;
+    background: rgba(255,255,255,0.9);
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+
+  .syntax-chunk.masked-word .chunk-word {
+    color: transparent;
+    background: #e2e8f0;
+    position: relative;
+  }
+  .syntax-chunk.masked-word .chunk-word::after {
+    content: "點我揭曉";
+    color: #1e40af;
+    font-size: 1.15rem;
+    position: absolute;
+  }
+
+  /* 詞性配色 */
+  .role-num { border-color: #3b82f6; }
+  .role-num .chunk-role { background: #dbeafe; color: #1e40af; }
+  .role-num .chunk-word { color: #1e3a8a; }
+
+  .role-measure { border-color: #8b5cf6; }
+  .role-measure .chunk-role { background: #ede9fe; color: #5b21b6; }
+  .role-measure .chunk-word { color: #4c1d95; }
+
+  .role-noun { border-color: #10b981; }
+  .role-noun .chunk-role { background: #d1fae5; color: #065f46; }
+  .role-noun .chunk-word { color: #064e3b; }
+
+  .role-verb { border-color: #f59e0b; }
+  .role-verb .chunk-role { background: #fef3c7; color: #92400e; }
+  .role-verb .chunk-word { color: #78350f; }
+
+  .role-adj { border-color: #ec4899; }
+  .role-adj .chunk-role { background: #fce7f3; color: #9d174d; }
+  .role-adj .chunk-word { color: #831843; }
+
+  .role-part { border-color: #64748b; }
+  .role-part .chunk-role { background: #e2e8f0; color: #334155; }
+  .role-part .chunk-word { color: #1e293b; }
+
+  .role-punct {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(2rem * var(--font-scale));
+    font-weight: 900;
+    color: #64748b;
+    padding: 0 4px;
+  }
+
+  .analysis-note-box {
+    background: #fffbeb;
+    border: 2px solid #f59e0b;
+    border-radius: 16px;
+    padding: 18px 22px;
+    margin-top: 16px;
+  }
+
+  .analysis-note-title {
+    font-size: calc(1.3rem * var(--font-scale));
+    font-weight: 900;
+    color: #b45309;
+    margin-bottom: 6px;
+  }
+
+  .analysis-note-body {
+    font-size: calc(1.32rem * var(--font-scale));
+    font-weight: 700;
+    color: #1e293b;
+  }
+
+  /* 情境造句練習區（每個句型 3 個情境） */
+  .scenarios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 22px;
+    margin-top: 20px;
+  }
+
+  .scenario-card {
+    background: #fff;
+    border: 3px solid #cbd5e1;
+    border-radius: 22px;
+    padding: 24px 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+  }
+
+  .scenario-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .scenario-badge {
+    background: #1e40af;
+    color: #fff;
+    font-weight: 900;
+    font-size: calc(1.1rem * var(--font-scale));
+    padding: 5px 14px;
+    border-radius: 999px;
+  }
+
+  .scenario-title {
+    font-size: calc(1.5rem * var(--font-scale));
+    font-weight: 900;
+    color: #0f172a;
+  }
+
+  .scenario-prompt {
+    font-size: calc(1.32rem * var(--font-scale));
+    font-weight: 700;
+    color: #334155;
+    background: #f8fafc;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1.5px solid #e2e8f0;
+  }
+
+  .vocab-hint-box {
+    background: #eff6ff;
+    border: 2px dashed #60a5fa;
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-size: calc(1.2rem * var(--font-scale));
+    font-weight: 700;
+    color: #1e3a8a;
+  }
+
+  .reveal-ans-btn {
+    background: #f59e0b;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 13px 20px;
+    font-size: calc(1.25rem * var(--font-scale));
+    font-weight: 900;
+    cursor: pointer;
+    transition: background 0.15s;
+    width: 100%;
+  }
+
+  .reveal-ans-btn:hover {
+    background: #d97706;
+  }
+
+  .sample-answer-box {
+    display: none;
+    background: #ecfdf5;
+    border: 2.5px solid #10b981;
+    border-radius: 16px;
+    padding: 16px 18px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .sample-answer-box.show {
+    display: block;
+  }
+
+  .sample-ans-label {
+    font-size: calc(1.12rem * var(--font-scale));
+    font-weight: 900;
+    color: #047857;
+    margin-bottom: 6px;
+  }
+
+  .sample-ans-main {
+    font-size: calc(1.5rem * var(--font-scale));
+    font-weight: 900;
+    color: #064e3b;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .sample-ans-alt {
+    font-size: calc(1.2rem * var(--font-scale));
+    font-weight: 700;
+    color: #065f46;
+    border-top: 1.5px dashed #6ee7b7;
+    padding-top: 8px;
+  }
+
+  /* 課堂即時造句互動輸入板 */
+  .live-board-box {
+    background: #fff;
+    border: 3px solid #3b82f6;
+    border-radius: 22px;
+    padding: 24px 28px;
+    margin-top: 28px;
+  }
+
+  .live-board-title {
+    font-size: calc(1.55rem * var(--font-scale));
+    font-weight: 900;
+    color: #1e3a8a;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .live-input-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .live-input {
+    flex: 1;
+    min-width: 260px;
+    padding: 14px 18px;
+    font-size: calc(1.4rem * var(--font-scale));
+    font-weight: 700;
+    border: 2.5px solid #cbd5e1;
+    border-radius: 14px;
+    outline: none;
+  }
+
+  .live-input:focus {
+    border-color: #2563eb;
+  }
+
+  .live-list {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .live-item {
+    background: #f8fafc;
+    border: 2px solid #cbd5e1;
+    border-radius: 14px;
+    padding: 12px 18px;
+    font-size: calc(1.45rem * var(--font-scale));
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  /* =========================================
+     分頁四：五題隨堂小測驗
+     ========================================= */
+  .quiz-nav-panel {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 18px 24px;
+    margin-bottom: 22px;
+    border: 2.5px solid #cbd5e1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .quiz-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .category-badge {
+    background: #fef3c7;
+    color: #92400e;
+    border: 2px solid #f59e0b;
+    padding: 6px 18px;
+    border-radius: 999px;
+    font-size: calc(1.25rem * var(--font-scale));
+    font-weight: 900;
+  }
+
+  .q-dots {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .q-dot {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: 2.5px solid #cbd5e1;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 1.25rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .q-dot.current {
+    border-color: #1e40af;
+    background: #1e40af;
+    color: #fff;
+    transform: scale(1.06);
+  }
+
+  .q-dot.answered-correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+    color: var(--correct-text);
+  }
+
+  .q-dot.answered-wrong {
+    background: var(--wrong-bg);
+    border-color: var(--wrong-border);
+    color: var(--wrong-text);
+  }
+
+  .stage-card {
+    background: var(--surface);
+    border-radius: 24px;
+    padding: 34px 38px;
+    border: 3px solid #cbd5e1;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
+    margin-bottom: 22px;
+  }
+
+  .question-num-pill {
+    display: inline-block;
+    background: #1e40af;
+    color: #fff;
+    font-size: calc(1.3rem * var(--font-scale));
+    font-weight: 900;
+    padding: 5px 16px;
+    border-radius: 999px;
+    margin-right: 14px;
+    vertical-align: middle;
+  }
+
+  .question-stem {
+    font-size: calc(2rem * var(--font-scale));
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.55;
+    margin-bottom: 28px;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .option-btn {
+    background: var(--surface-sub);
+    border: 3px solid #cbd5e1;
+    border-radius: 18px;
+    padding: 20px 24px;
+    font-size: calc(1.65rem * var(--font-scale));
+    font-weight: 800;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.15s ease;
+  }
+
+  .option-btn:hover {
+    border-color: #2563eb;
+    background: #eff6ff;
+    transform: translateX(4px);
+  }
+
+  .opt-index {
+    font-size: calc(1.8rem * var(--font-scale));
+    font-weight: 900;
+    color: #1e40af;
+    flex-shrink: 0;
+  }
+
+  .option-btn.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct-border);
+    color: var(--correct-text);
+  }
+
+  .option-btn.wrong {
+    background: var(--wrong-bg);
+    border-color: var(--wrong-border);
+    color: var(--wrong-text);
+  }
+
+  .explanation-box {
+    display: none;
+    margin-top: 26px;
+    background: #fffbeb;
+    border: 3px solid #f59e0b;
+    border-radius: 18px;
+    padding: 22px 26px;
+  }
+
+  .explanation-box.show {
+    display: block;
+  }
+
+  .exp-header {
+    font-size: calc(1.6rem * var(--font-scale));
+    font-weight: 900;
+    color: #b45309;
+    margin-bottom: 8px;
+  }
+
+  .exp-body {
+    font-size: calc(1.55rem * var(--font-scale));
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.6;
+  }
+
+  .stage-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .ctrl-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .ctrl-btn {
+    padding: 14px 24px;
+    border-radius: 14px;
+    font-size: calc(1.35rem * var(--font-scale));
+    font-weight: 900;
+    border: 2.5px solid #cbd5e1;
+    background: #fff;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .ctrl-btn:hover:not(:disabled) {
+    border-color: #1e40af;
+    background: #eff6ff;
+  }
+
+  .ctrl-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .ctrl-btn.primary {
+    background: #1e40af;
+    color: #fff;
+    border-color: #1e3a8a;
+  }
+
+  .ctrl-btn.reveal {
+    background: #f59e0b;
+    color: #fff;
+    border-color: #d97706;
+  }
+
+  /* 手稿講義圖片彈窗 */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.75);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .modal-overlay.show {
+    display: flex;
+  }
+
+  .modal-card {
+    background: #fff;
+    border-radius: 22px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .modal-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    border: 2px solid #cbd5e1;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand" onclick="goHome()" title="返回課次選擇首頁">
+    <span class="brand-badge">四上國語</span>
+    <span class="brand-title">第七課～第十二課 短語與句型教學互動網</span>
+  </div>
+  <div class="toolbar">
+    <button class="tool-btn" id="btn-home" onclick="goHome()" style="display:none;">🏠 返回選課首頁</button>
+    <button class="tool-btn" id="btn-handout" onclick="toggleHandoutModal(true)" style="display:none;">🖼 檢視板書講義原圖</button>
+    <button class="tool-btn" onclick="adjustFontSize(-0.1)" title="縮小字體">A-</button>
+    <button class="tool-btn" onclick="adjustFontSize(0)" title="標準字體">標準字級</button>
+    <button class="tool-btn" onclick="adjustFontSize(0.12)" title="放大字體">A+</button>
+    <button class="tool-btn" onclick="toggleFullscreen()">⛶ 全螢幕投影</button>
+  </div>
+</header>
+
+<main>
+  <!-- 首頁：七到十二課選單 -->
+  <section id="home-view">
+    <div class="hero-banner">
+      <div>
+        <h1>國語四上（第七冊）短語與句型互動教學網</h1>
+        <p>自然段對照定位・彩色詞性結構拆解・每句 3 大生活情境造句練習・5 題隨堂小測驗</p>
+      </div>
+    </div>
+    <div class="lesson-grid" id="lesson-grid"></div>
+  </section>
+
+  <!-- 課程互動教學畫面 -->
+  <section id="lesson-view">
+    <div class="module-nav">
+      <div class="module-lesson-title" id="current-lesson-heading">第七課《到此「藝」遊》</div>
+      <div class="module-tabs">
+        <button class="module-tab-btn active" id="tab-btn-paragraphs" onclick="switchTab('paragraphs')">📍 1. 課文自然段定位</button>
+        <button class="module-tab-btn" id="tab-btn-structure" onclick="switchTab('structure')">🧩 2. 短語與句型拆解</button>
+        <button class="module-tab-btn" id="tab-btn-practice" onclick="switchTab('practice')">✍️ 3. 情境造句練習 (3×3)</button>
+        <button class="module-tab-btn" id="tab-btn-quiz" onclick="switchTab('quiz')">🎯 4. 五題隨堂小測驗</button>
+      </div>
+    </div>
+
+    <!-- 分頁 1：課文自然段位置與全文對照 -->
+    <div class="tab-panel active" id="panel-paragraphs">
+      <div class="overview-grid" id="target-overview-cards"></div>
+      <div class="text-reader-box">
+        <div class="reader-header">
+          <div class="reader-title">📖 第七課《到此「藝」遊》陳琡 —— 全文 7 個自然段對照（點擊彩色底線句可直接拆解結構）</div>
+        </div>
+        <div id="paragraphs-container"></div>
+      </div>
+    </div>
+
+    <!-- 分頁 2：短語與句型拆解 -->
+    <div class="tab-panel" id="panel-structure">
+      <div class="pattern-selector-bar" id="structure-selector-bar"></div>
+      <div id="structure-stage-content"></div>
+    </div>
+
+    <!-- 分頁 3：情境造句練習 -->
+    <div class="tab-panel" id="panel-practice">
+      <div class="pattern-selector-bar" id="practice-selector-bar"></div>
+      <div id="practice-stage-content"></div>
+    </div>
+
+    <!-- 分頁 4：五題隨堂小測驗 -->
+    <div class="tab-panel" id="panel-quiz">
+      <div class="quiz-nav-panel">
+        <div class="quiz-header-row">
+          <div style="font-size:calc(1.6rem * var(--font-scale));font-weight:900;color:#1e3a8a;">
+            🎯 第七課 短語與句型五題隨堂小測驗
+          </div>
+          <div class="category-badge" id="quiz-category-badge">結構與應用測驗</div>
+        </div>
+        <div class="q-dots" id="q-dots"></div>
+      </div>
+
+      <div class="stage-card">
+        <div class="question-stem" id="stage-stem"></div>
+        <div class="options-grid" id="stage-options"></div>
+        <div class="explanation-box" id="stage-exp">
+          <div class="exp-header" id="stage-exp-header">💡 答案與解析</div>
+          <div class="exp-body" id="stage-exp-body"></div>
+        </div>
+      </div>
+
+      <div class="stage-controls">
+        <div class="ctrl-group">
+          <button class="ctrl-btn" id="btn-prev" onclick="prevQuestion()">⬅ 上一題</button>
+          <button class="ctrl-btn primary" id="btn-next" onclick="nextQuestion()">下一題 ➡</button>
+        </div>
+        <div class="ctrl-group">
+          <button class="ctrl-btn reveal" onclick="revealCurrentAnswer()">💡 直接公佈答案與解析</button>
+          <button class="ctrl-btn" onclick="resetCurrentQuestion()">🔄 重置本題</button>
+          <button class="ctrl-btn" onclick="resetAllQuestions()">🧹 全部重作</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 板書原圖彈窗 -->
+<div class="modal-overlay" id="handout-modal" onclick="toggleHandoutModal(false)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h3 style="font-size:1.4rem;font-weight:900;color:#1e3a8a;">📌 第七課 到此「藝」遊 短語、句型練習講義</h3>
+      <button class="ctrl-btn" style="padding:8px 16px;font-size:1.1rem;" onclick="toggleHandoutModal(false)">✕ 關閉</button>
+    </div>
+    <img src="assets/L7-handout.jpg" alt="第七課短語句型練習講義">
+  </div>
+</div>
+
+<script>
+const LESSONS = [
+  {
+    id: "L7",
+    lessonNum: "第七課",
+    title: "到此「藝」遊",
+    author: "陳琡",
+    subtitle: "2 組短語結構拆解 ＋ 1 組並列複句 ＋ 9 個造句情境 ＋ 5 題小測驗",
+    ready: true,
+    features: ["📍 第2、6、7自然段定位", "🧩 詞性積木拆解", "✍️ 9個造句情境與解答", "🎯 5題隨堂測驗"],
+    paragraphs: [
+      {
+        num: 1,
+        label: "第一自然段",
+        text: "終於到了戶外教育日！今天天空有點灰，但我的心情很晴朗，因為老師帶我們參觀宜蘭傳藝園區。",
+        targetId: null
+      },
+      {
+        num: 2,
+        label: "第二自然段",
+        text: "進入園區，我的眼睛為之一亮。街道旁是古色古香的磚紅色建築，<span class='target-highlight hl-1' onclick='jumpToPattern(0)'>一個個紅燈籠，看起來喜氣洋洋。</span><button class='jump-analyze-btn' onclick='jumpToPattern(0)'>🔍 拆解短語 1</button>",
+        targetId: 0
+      },
+      {
+        num: 3,
+        label: "第三自然段",
+        text: "走進魯班街，街上的傳習所分別介紹陶器、玉石、藍染等藝術品，樣式獨特，令人目不轉睛。在燈光下，清透的琉璃閃著七彩光芒，讓我流連忘返。",
+        targetId: null
+      },
+      {
+        num: 4,
+        label: "第四自然段",
+        text: "接著，我們到劇場觀賞「噶瑪蘭公主」。一開場，演員們隨著音樂又唱又跳、翻跟斗，還有人走在細細的鋼索上，大家不禁為他捏一把冷汗。最難忘的，是演員揮舞半個舞臺大的赤紅色大旗時，有如一場熊熊烈火，精采的表演讓全場為他尖叫，真是有趣！",
+        targetId: null
+      },
+      {
+        num: 5,
+        label: "第五自然段",
+        text: "看完表演，我們到渡船頭坐木船遊河。木船沿著月河慢慢前進，穿過爬滿綠色植物的石拱橋。這時，深綠色的河水彷彿也悄悄爬上了岸，綠水連著青草，一片綠意，美極了！微風吹過岸邊金黃的落羽松，我迎著清涼的風，張開想像的翅膀，在綠波上飛舞。突然，耳邊傳來同學的驚呼聲，原來有幾隻頑皮的魚不時在船邊出沒，好像在和我們玩遊戲，白色的水鳥也飛來打招呼，河上充滿了歡笑聲。",
+        targetId: null
+      },
+      {
+        num: 6,
+        label: "第六自然段",
+        text: "最後一站是文昌街。街上有許多特色小店，大家各自挑著喜歡的紀念品，<span class='target-highlight hl-3' onclick='jumpToPattern(2)'>有人買了圓滾滾的金魚造型香包，有人買了五顏六色的捏麵人……。</span><button class='jump-analyze-btn' onclick='jumpToPattern(2)'>🔍 拆解句型 3</button>我來來回回看了好一會兒，決定只帶滿心喜悅回家和爸媽分享。",
+        targetId: 2
+      },
+      {
+        num: 7,
+        label: "第七自然段",
+        text: "回程時，看著車窗外，原本<span class='target-highlight hl-2' onclick='jumpToPattern(1)'>灰色的天空出現了一片雲彩</span><button class='jump-analyze-btn' onclick='jumpToPattern(1)'>🔍 拆解短語 2</button>，溫暖的顏色就像我內心的喜悅和滿足。這次的活動讓我看到許多傳統文化，體會到生活中有藝術。宜蘭傳藝園區值得細細品味，更值得一來再來！",
+        targetId: 1
+      }
+    ],
+    patterns: [
+      {
+        index: 0,
+        tag: "短語與句構練習 1",
+        paragraphNum: 2,
+        paragraphLabel: "第二自然段",
+        badgeClass: "p-blue",
+        cardType: "type-1",
+        formula: "一 ＋ 疊字量詞 ＋ 名詞 ， 動詞 ＋ 起來 ＋ 四字形容詞。",
+        originalSentence: "一個個紅燈籠，看起來喜氣洋洋。",
+        paragraphContext: "進入園區，我的眼睛為之一亮。街道旁是古色古香的磚紅色建築，<strong>一個個紅燈籠，看起來喜氣洋洋。</strong>",
+        teachingNote: "前半句用「一＋疊字量詞（個個、本本、顆顆）」強調數量眾多且排列呈現的畫面感；後半句用「感官動詞（看、讀、吃、聞、聽）＋起來＋四字形容詞」表達親身觀察或體驗後的整體感受。",
+        examples: [
+          {
+            title: "📌 課文原句（第二自然段）",
+            chunks: [
+              { role: "數詞", word: "一", cls: "role-num" },
+              { role: "疊字量詞", word: "個個", cls: "role-measure" },
+              { role: "名詞", word: "紅燈籠", cls: "role-noun" },
+              { punct: "，" },
+              { role: "動詞", word: "看", cls: "role-verb" },
+              { role: "趨向補語", word: "起來", cls: "role-part" },
+              { role: "四字形容詞", word: "喜氣洋洋", cls: "role-adj" },
+              { punct: "。" }
+            ]
+          },
+          {
+            title: "📌 講義延伸例句",
+            chunks: [
+              { role: "數詞", word: "一", cls: "role-num" },
+              { role: "疊字量詞", word: "本本", cls: "role-measure" },
+              { role: "名詞", word: "小說", cls: "role-noun" },
+              { punct: "，" },
+              { role: "動詞", word: "讀", cls: "role-verb" },
+              { role: "趨向補語", word: "起來", cls: "role-part" },
+              { role: "四字形容詞", word: "精采刺激", cls: "role-adj" },
+              { punct: "。" }
+            ]
+          }
+        ],
+        scenarios: [
+          {
+            num: 1,
+            title: "情境一：水果攤的香甜鮮果（味覺／視覺）",
+            prompt: "走進果園或水果攤，看到籃子裡裝滿了又大又紅的蘋果或草莓，放進嘴裡品嘗時覺得非常美味。",
+            hint: "💡 詞彙鷹架：疊字量詞可用「顆顆、串串」｜動詞可用「吃、咬、看」｜四字形容詞可用「香甜多汁、酸甜可口、垂涎欲滴」。",
+            answerMain: "一顆顆紅蘋果，吃起來香甜多汁。",
+            answerAlt: "另一參考答案：一串串紫葡萄，看起來垂涎欲滴。"
+          },
+          {
+            num: 2,
+            title: "情境二：剛出爐的烘焙麵包店（嗅覺／味覺）",
+            prompt: "放學經過街角的麵包店，烘焙師傅剛烤好熱騰騰的蛋糕與麵包，陣陣香氣飄散出來。",
+            hint: "💡 詞彙鷹架：疊字量詞可用「塊塊、個個、條條」｜動詞可用「聞、吃」｜四字形容詞可用「香氣撲鼻、鬆軟可口、美味無比」。",
+            answerMain: "一塊塊烤蛋糕，聞起來香氣撲鼻。",
+            answerAlt: "另一參考答案：一個個菠蘿麵包，吃起來鬆軟可口。"
+          },
+          {
+            num: 3,
+            title: "情境三：音樂會或春天的花園（聽覺／視覺）",
+            prompt: "在音樂廳聆聽優美的鋼琴樂曲，或是走進春天的花園欣賞盛開的花朵。",
+            hint: "💡 詞彙鷹架：疊字量詞可用「首首、朵朵」｜動詞可用「聽、看」｜四字形容詞可用「悅耳動聽、朝氣蓬勃、賞心悅目」。",
+            answerMain: "一首首鋼琴曲，聽起來悅耳動聽。",
+            answerAlt: "另一參考答案：一朵朵向日葵，看起來朝氣蓬勃。"
+          }
+        ]
+      },
+      {
+        index: 1,
+        tag: "短語與句構練習 2",
+        paragraphNum: 7,
+        paragraphLabel: "第七自然段",
+        badgeClass: "p-green",
+        cardType: "type-2",
+        formula: "形容詞(顏色) ＋ 的 ＋ 名詞 ＋ 動詞 ＋ 了(出、著……) ＋ 一 ＋ 量詞 ＋ 名詞。",
+        originalSentence: "灰色的天空出現了一片雲彩。",
+        paragraphContext: "回程時，看著車窗外，原本<strong>灰色的天空出現了一片雲彩</strong>，溫暖的顏色就像我內心的喜悅和滿足。",
+        teachingNote: "前半段先用「顏色形容詞＋的＋名詞」描繪廣闊的背景色彩（如：灰色的天空、碧藍的湖面）；接著用「動詞＋了／出／著」帶出動態變化，最後以「一＋量詞＋名詞」點出畫面中浮現的視覺焦點（如：一片雲彩、一輪明月）。",
+        examples: [
+          {
+            title: "📌 課文原句（第七自然段）",
+            chunks: [
+              { role: "形容詞(顏色)", word: "灰色", cls: "role-adj" },
+              { role: "結構助詞", word: "的", cls: "role-part" },
+              { role: "名詞(背景)", word: "天空", cls: "role-noun" },
+              { role: "動詞", word: "出現", cls: "role-verb" },
+              { role: "助詞(了/出/著)", word: "了", cls: "role-part" },
+              { role: "數詞", word: "一", cls: "role-num" },
+              { role: "量詞", word: "片", cls: "role-measure" },
+              { role: "名詞(焦點)", word: "雲彩", cls: "role-noun" },
+              { punct: "。" }
+            ]
+          },
+          {
+            title: "📌 講義延伸例句",
+            chunks: [
+              { role: "形容詞(顏色)", word: "碧藍", cls: "role-adj" },
+              { role: "結構助詞", word: "的", cls: "role-part" },
+              { role: "名詞(背景)", word: "湖面", cls: "role-noun" },
+              { role: "動詞", word: "倒映", cls: "role-verb" },
+              { role: "補語(了/出/著)", word: "出", cls: "role-part" },
+              { role: "數詞", word: "一", cls: "role-num" },
+              { role: "量詞", word: "輪", cls: "role-measure" },
+              { role: "名詞(焦點)", word: "明月", cls: "role-noun" },
+              { punct: "。" }
+            ]
+          }
+        ],
+        scenarios: [
+          {
+            num: 1,
+            title: "情境一：春天生機盎然的草地或荷塘（植物自然）",
+            prompt: "春天來了，綠油油的草地上綻放出美麗的小花；或是清晨翠綠的荷葉上，停著晶瑩剔透的露珠。",
+            hint: "💡 詞彙鷹架：顏色可用「翠綠、嫩綠」｜背景名詞「草地、荷葉」｜動詞＋助詞「開出了、滾動著」｜量詞＋名詞「一朵小花、一顆露珠」。",
+            answerMain: "翠綠的草地開出了一朵小花。",
+            answerAlt: "另一參考答案：翠綠的荷葉滾動著一顆露珠。"
+          },
+          {
+            num: 2,
+            title: "情境二：夜晚神祕的星空（自然天象）",
+            prompt: "在沒有光害的夜晚抬頭仰望黑漆漆的夜空，突然看見一道明亮的流星劃過天際。",
+            hint: "💡 詞彙鷹架：顏色可用「烏黑、深藍」｜背景名詞「夜空、天際」｜動詞＋助詞「劃過了、閃爍著」｜量詞＋名詞「一道流星、一顆明星」。",
+            answerMain: "烏黑的夜空劃過了一道流星。",
+            answerAlt: "另一參考答案：深藍的夜空閃爍著一顆明星。"
+          },
+          {
+            num: 3,
+            title: "情境三：陽光下的海邊與沙灘（海濱風光）",
+            prompt: "走在海邊金黃色的沙灘上，或是望著蔚藍的大海，看見沙灘上的腳印或海面上的帆船。",
+            hint: "💡 詞彙鷹架：顏色可用「金黃、蔚藍」｜背景名詞「沙灘、海面」｜動詞＋助詞「留下了、駛過了」｜量詞＋名詞「一串腳印、一艘帆船」。",
+            answerMain: "金黃的沙灘留下了一串腳印。",
+            answerAlt: "另一參考答案：蔚藍的海面駛過了一艘帆船。"
+          }
+        ]
+      },
+      {
+        index: 2,
+        tag: "句型練習 3（並列複句）",
+        paragraphNum: 6,
+        paragraphLabel: "第六自然段",
+        badgeClass: "p-amber",
+        cardType: "type-3",
+        formula: "有人……有人……（並列複句）",
+        originalSentence: "街上有許多特色小店，大家各自挑著喜歡的紀念品，有人買了圓滾滾的金魚造型香包，有人買了五顏六色的捏麵人……。",
+        paragraphContext: "最後一站是文昌街。街上有許多特色小店，大家各自挑著喜歡的紀念品，<strong>有人買了圓滾滾的金魚造型香包，有人買了五顏六色的捏麵人……。</strong>我來來回回看了好一會兒，決定只帶滿心喜悅回家和爸媽分享。",
+        teachingNote: "「有人……有人……」屬於【並列複句】。造句時，通常先在第一句鋪陳「地點、時間或整體熱鬧的情境」，接著用兩個（或多個）「有人＋具體動作與形容詞修飾」並列呈現不同的人在同一場合做著不同的事，讓畫面豐富立體。",
+        examples: [
+          {
+            title: "📌 課文原句（第六自然段）",
+            chunks: [
+              { role: "前導情境（場所與整體活動）", word: "街上有許多特色小店，大家各自挑著喜歡的紀念品", cls: "role-part" },
+              { punct: "，" },
+              { role: "並列連詞 1", word: "有人", cls: "role-num" },
+              { role: "具體動作＋修飾語 1", word: "買了圓滾滾的金魚造型香包", cls: "role-noun" },
+              { punct: "，" },
+              { role: "並列連詞 2", word: "有人", cls: "role-num" },
+              { role: "具體動作＋修飾語 2", word: "買了五顏六色的捏麵人……", cls: "role-noun" },
+              { punct: "。" }
+            ]
+          },
+          {
+            title: "📌 講義延伸例句",
+            chunks: [
+              { role: "前導情境（場所特徵）", word: "公園有寬廣的草地和樹蔭", cls: "role-part" },
+              { punct: "，" },
+              { role: "並列連詞 1", word: "有人", cls: "role-num" },
+              { role: "具體動作＋修飾語 1", word: "沿著綠樹成蔭的步道散步", cls: "role-noun" },
+              { punct: "，" },
+              { role: "並列連詞 2", word: "有人", cls: "role-num" },
+              { role: "具體動作＋修飾語 2", word: "坐在草地上野餐", cls: "role-noun" },
+              { punct: "。" }
+            ]
+          }
+        ],
+        scenarios: [
+          {
+            num: 1,
+            title: "情境一：熱鬧的下課十分鐘（校園生活）",
+            prompt: "下課鐘聲一響，同學們紛紛來到操場或走廊放鬆心情，每個人進行著不同的休閒活動。",
+            hint: "💡 造句鷹架：【前導情境：下課鐘聲響起，熱鬧的操場上充滿歡笑聲】，有人【在籃球場上盡情的奔跑投籃】，有人【在大樹下開心的玩跳繩】。",
+            answerMain: "下課鐘聲一響，操場上熱鬧極了，有人在陽光下盡情的奔跑打球，有人在大樹下開心的玩跳繩。",
+            answerAlt: "另一參考答案：下課時的教室十分熱鬧，有人圍在講臺前和老師聊天，有人坐在座位上安靜的看故事書。"
+          },
+          {
+            num: 2,
+            title: "情境二：假日的圖書館（公共場所）",
+            prompt: "週末來到寬敞舒適的圖書館，館內的民眾各自沉浸在書香世界裡做不同的事。",
+            hint: "💡 造句鷹架：【前導情境：假日的圖書館裡既安靜又舒適】，有人【站在書架前仔細的挑選繪本】，有人【坐在窗邊專心的閱讀小說】。",
+            answerMain: "假日的圖書館裡既安靜又舒適，有人站在書架前仔細的挑選繪本，有人坐在木椅上專心的閱讀歷史故事。",
+            answerAlt: "另一參考答案：寬敞的閱覽室裡有許多民眾，有人戴著耳機在電腦前查資料，有人低著頭振筆疾書寫作業。"
+          },
+          {
+            num: 3,
+            title: "情境三：全家分工合作大掃除或逛夜市（家庭／生活）",
+            prompt: "除夕前全家人一起動手大掃除，或是週末夜晚全家人去逛人山人海的觀光夜市。",
+            hint: "💡 造句鷹架：【前導情境：假日的觀光夜市人山人海】，有人【在攤位前品嘗香噴噴的烤玉米】，有人【在遊戲區開心的玩套圈圈】。",
+            answerMain: "假日的觀光夜市人山人海，有人在攤位前品嘗香噴噴的烤玉米，有人在遊戲區開心的玩套圈圈。",
+            answerAlt: "另一參考答案：過年前全家人一起動手大掃除，有人拿著抹布把窗戶擦得亮晶晶，有人在門口貼上喜氣洋洋的春聯。"
+          }
+        ]
+      }
+    ],
+    quiz: [
+      {
+        section: "第 1 題｜自然段位置與課文句子對應",
+        stem: "在第七課《到此「藝」遊》課文中，下列教學句子與其所在「自然段位置」的配對，哪一個是【完全正確】的？",
+        options: [
+          "「一個個紅燈籠，看起來喜氣洋洋。」——位於【第一自然段】",
+          "「有人買了圓滾滾的金魚造型香包，有人買了五顏六色的捏麵人……。」——位於【第六自然段】",
+          "「灰色的天空出現了一片雲彩」——位於【第五自然段】",
+          "以上三個教學句子全部都集中在【第四自然段】"
+        ],
+        answer: 1,
+        explanation: "「一個個紅燈籠，看起來喜氣洋洋。」位於【第二自然段】；「有人買了圓滾滾的金魚造型香包……」位於【第六自然段】（文昌街買紀念品）；「灰色的天空出現了一片雲彩」位於【第七自然段】（回程看車窗外）。因此只有 ② 正確！"
+      },
+      {
+        section: "第 2 題｜短語結構一辨析",
+        stem: "請依照課文短語「一個個紅燈籠，看起來喜氣洋洋。」的結構【一＋疊字量詞＋名詞，動詞＋起來＋四字形容詞】，選出結構【完全相符】的句子：",
+        options: [
+          "一件件毛衣，穿起來溫暖舒適。",
+          "一個大紅燈籠，看起來非常漂亮。",
+          "一朵朵美麗的花，在風中輕輕搖擺。",
+          "一顆顆紅草莓，吃下去真是甜。"
+        ],
+        answer: 0,
+        explanation: "①「一（數詞）＋件件（疊字量詞）＋毛衣（名詞），穿（動詞）＋起來＋溫暖舒適（四字形容詞）」完全符合結構！② 缺少疊字量詞且「非常漂亮」非四字成語/形容詞結構；③ 後半句沒有「動詞＋起來」；④ 用了「吃下去」且結尾不是四字形容詞。"
+      },
+      {
+        section: "第 3 題｜短語結構二辨析",
+        stem: "分析短語「灰色的天空出現了一片雲彩。」與「碧藍的湖面倒映出一輪明月。」的結構，下列哪一個句子的詞性與結構拆解【完全相同】？",
+        options: [
+          "寬廣的草原奔跑著許多野馬。",
+          "翠綠的荷葉滾動著一顆露珠。",
+          "紅通通的蘋果放在圓圓的盤子裡。",
+          "溫暖的陽光照射著翠綠的大地。"
+        ],
+        answer: 1,
+        explanation: "結構公式為【形容詞(顏色)＋的＋名詞＋動詞＋了(出、著……)＋一＋量詞＋名詞】。②「翠綠（顏色）＋的＋荷葉（名詞）＋滾動（動詞）＋著＋一＋顆（量詞）＋露珠（名詞）」完全相符！①「寬廣」不是顏色且「許多」不是「一＋量詞」。"
+      },
+      {
+        section: "第 4 題｜並列複句句型觀念",
+        stem: "課文第六自然段：「街上有許多特色小店，大家各自挑著喜歡的紀念品，有人買了圓滾滾的金魚造型香包，有人買了五顏六色的捏麵人……。」關於「有人……有人……」這個句型的說明，下列何者【正確】？",
+        options: [
+          "這是「因果複句」，用來說明因為有人買香包，所以才導致別人買捏麵人。",
+          "這是「轉折複句」，前後兩個「有人」做的事情必須完全相反。",
+          "這是「並列複句」，用來並列描寫同一場合中不同的人各自做著不同的事，呈現豐富熱鬧的畫面。",
+          "這是「假設複句」，代表這些人其實都還沒有真正買東西。"
+        ],
+        answer: 2,
+        explanation: "「有人……有人……」屬於【並列複句】，常用在描寫一個場所或活動中，不同的人物同時進行著不同的動作，能讓文章畫面更豐富、熱鬧！"
+      },
+      {
+        section: "第 5 題｜短語與句型綜合應用",
+        stem: "小華想綜合運用第七課學到的句型與短語來描寫「園遊會」，請問下列哪一個句子寫得【最通順且符合句型用法】？",
+        options: [
+          "園遊會十分熱鬧，有人在攤位前叫賣香噴噴的點心，有人在舞臺下欣賞精采的表演。",
+          "園遊會十分熱鬧，有人昨天沒來上學，有人明天要去爬山。",
+          "因為園遊會裡有人賣飲料，所以灰色的天空出現了一片雲彩。",
+          "園遊會裡有人一個個紅燈籠，有人看起來喜氣洋洋。"
+        ],
+        answer: 0,
+        explanation: "① 先以「園遊會十分熱鬧」交代場合情境，接著用「有人在攤位前叫賣……，有人在舞臺下欣賞……」並列呈現園遊會裡不同人的活動，語意自然且結構正確！"
+      }
+    ]
+  },
+  {
+    id: "L8",
+    lessonNum: "第八課",
+    title: "四季的頭髮",
+    author: "林世仁",
+    subtitle: "短語結構拆解、句型練習與五題小測驗（待建立）",
+    ready: false,
+    features: ["⏳ 待建立"]
+  },
+  {
+    id: "L9",
+    lessonNum: "第九課",
+    title: "阿白觀察記",
+    author: "",
+    subtitle: "短語結構拆解、句型練習與五題小測驗（待建立）",
+    ready: false,
+    features: ["⏳ 待建立"]
+  },
+  {
+    id: "L10",
+    lessonNum: "第十課",
+    title: "老鼠嫁女兒",
+    author: "改寫自臺灣民間故事",
+    subtitle: "短語結構拆解、句型練習與五題小測驗（待建立）",
+    ready: false,
+    features: ["⏳ 待建立"]
+  },
+  {
+    id: "L11",
+    lessonNum: "第十一課",
+    title: "豆粥婆婆",
+    author: "改寫自韓國民間故事",
+    subtitle: "短語結構拆解、句型練習與五題小測驗（待建立）",
+    ready: false,
+    features: ["⏳ 待建立"]
+  },
+  {
+    id: "L12",
+    lessonNum: "第十二課",
+    title: "戴斗笠的地藏",
+    author: "改寫自日本民間故事",
+    subtitle: "短語結構拆解、句型練習與五題小測驗（待建立）",
+    ready: false,
+    features: ["⏳ 待建立"]
+  }
+];
+
+const CIRCLED_NUMS = ["①", "②", "③", "④"];
+let currentLesson = null;
+let currentTab = "paragraphs";
+let currentPatternIdx = 0;
+let maskMode = "none"; // "none" | "role" | "word"
+let currentQIndex = 0;
+let userQuizState = {};
+let fontScale = 1;
+let customSentences = JSON.parse(localStorage.getItem("chaohe_402_L7_sentences") || "{}");
+
+function renderHome() {
+  const grid = document.getElementById("lesson-grid");
+  grid.innerHTML = LESSONS.map(lesson => `
+    <div class="lesson-card ${lesson.ready ? 'ready' : 'locked'}"
+         onclick="${lesson.ready ? `openLesson('${lesson.id}')` : ''}">
+      <div>
+        <div class="card-top">
+          <span class="lesson-tag">${lesson.lessonNum}</span>
+          <span class="status-pill ${lesson.ready ? 'ready' : 'soon'}">
+            ${lesson.ready ? '✅ 已上線・教學互動完整版' : '⏳ 待建立'}
+          </span>
+        </div>
+        <div class="lesson-name" style="margin-top:16px;">
+          ${lesson.title}
+          ${lesson.author ? `<span style="font-size:0.6em;color:#64748b;font-weight:700;margin-left:8px;">${lesson.author}</span>` : ''}
+        </div>
+        <div class="lesson-desc" style="margin-top:6px;">${lesson.subtitle}</div>
+        <div class="feature-chips">
+          ${(lesson.features || []).map(f => `<span class="feature-chip">${f}</span>`).join("")}
+        </div>
+      </div>
+      <button class="start-btn" ${lesson.ready ? '' : 'disabled'}>
+        ${lesson.ready ? '▶ 進入短語與句型互動教學' : '敬請期待'}
+      </button>
+    </div>
+  `).join("");
+}
+
+function openLesson(lessonId) {
+  const lesson = LESSONS.find(l => l.id === lessonId);
+  if (!lesson || !lesson.ready) return;
+  currentLesson = lesson;
+  currentPatternIdx = 0;
+  maskMode = "none";
+  currentQIndex = 0;
+  userQuizState = {};
+
+  document.getElementById("home-view").style.display = "none";
+  document.getElementById("lesson-view").style.display = "block";
+  document.getElementById("btn-home").style.display = "inline-flex";
+  document.getElementById("btn-handout").style.display = "inline-flex";
+  document.getElementById("current-lesson-heading").textContent = `${lesson.lessonNum}《${lesson.title}》短語與句型教學`;
+
+  renderParagraphsTab();
+  renderStructureTab();
+  renderPracticeTab();
+  renderQuizTab();
+  switchTab("paragraphs");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function goHome() {
+  currentLesson = null;
+  document.getElementById("home-view").style.display = "block";
+  document.getElementById("lesson-view").style.display = "none";
+  document.getElementById("btn-home").style.display = "none";
+  document.getElementById("btn-handout").style.display = "none";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function switchTab(tabName) {
+  currentTab = tabName;
+  ["paragraphs", "structure", "practice", "quiz"].forEach(t => {
+    document.getElementById(`tab-btn-${t}`).classList.toggle("active", t === tabName);
+    document.getElementById(`panel-${t}`).classList.toggle("active", t === tabName);
+  });
+}
+
+/* =========================================
+   分頁 1：自然段對照與定位
+   ========================================= */
+function renderParagraphsTab() {
+  const overviewEl = document.getElementById("target-overview-cards");
+  overviewEl.innerHTML = currentLesson.patterns.map((p, idx) => `
+    <div class="target-summary-card ${p.cardType}" onclick="focusParagraph(${p.paragraphNum}, ${idx})">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <span class="para-badge ${p.badgeClass}">📍 對應課文：${p.paragraphLabel}</span>
+        <span style="font-size:0.95rem;font-weight:800;color:#2563eb;">點擊定位課文 ⬇</span>
+      </div>
+      <div class="summary-pattern-title">${p.tag}：${p.formula}</div>
+      <div class="summary-sentence">「${p.originalSentence}」</div>
+    </div>
+  `).join("");
+
+  const parasEl = document.getElementById("paragraphs-container");
+  parasEl.innerHTML = currentLesson.paragraphs.map(para => {
+    const hasTarget = para.targetId !== null;
+    const targetPattern = hasTarget ? currentLesson.patterns[para.targetId] : null;
+    return `
+      <div class="paragraph-row ${hasTarget ? 'has-target' : ''}" id="para-row-${para.num}">
+        <div class="para-num-tag">
+          ${para.label}
+          ${hasTarget ? `<div style="font-size:0.82em;background:#fbbf24;color:#1e3a8a;border-radius:6px;padding:2px 6px;margin-top:4px;">★ ${targetPattern.tag}</div>` : ''}
+        </div>
+        <div class="para-content">${para.text}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function focusParagraph(paraNum) {
+  document.querySelectorAll(".paragraph-row").forEach(el => el.classList.remove("active-focus"));
+  const targetRow = document.getElementById(`para-row-${paraNum}`);
+  if (targetRow) {
+    targetRow.classList.add("active-focus");
+    targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+function jumpToPattern(patternIdx) {
+  currentPatternIdx = patternIdx;
+  renderStructureTab();
+  renderPracticeTab();
+  switchTab("structure");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* =========================================
+   分頁 2：短語與句型結構拆解
+   ========================================= */
+function selectPattern(idx) {
+  currentPatternIdx = idx;
+  maskMode = "none";
+  renderStructureTab();
+  renderPracticeTab();
+}
+
+function setMaskMode(mode) {
+  maskMode = (maskMode === mode) ? "none" : mode;
+  renderStructureTab();
+}
+
+function toggleSingleChunk(el) {
+  el.classList.remove("masked-role", "masked-word");
+}
+
+function renderPatternSelectorBar(containerId) {
+  const bar = document.getElementById(containerId);
+  bar.innerHTML = currentLesson.patterns.map((p, idx) => `
+    <button class="pattern-pill-btn ${idx === currentPatternIdx ? 'active' : ''}" onclick="selectPattern(${idx})">
+      <div class="pill-top">
+        <span class="pill-num">${p.tag}</span>
+        <span class="pill-loc">📍 ${p.paragraphLabel}</span>
+      </div>
+      <div class="pill-formula">${p.formula}</div>
+    </button>
+  `).join("");
+}
+
+function renderStructureTab() {
+  renderPatternSelectorBar("structure-selector-bar");
+  const p = currentLesson.patterns[currentPatternIdx];
+  const stage = document.getElementById("structure-stage-content");
+
+  const examplesHtml = p.examples.map((ex) => {
+    const chunksHtml = ex.chunks.map((c) => {
+      if (c.punct) {
+        return `<div class="role-punct">${c.punct}</div>`;
+      }
+      let extraMask = "";
+      if (maskMode === "role") extraMask = "masked-role";
+      if (maskMode === "word") extraMask = "masked-word";
+      return `
+        <div class="syntax-chunk ${c.cls} ${extraMask}" onclick="toggleSingleChunk(this)" title="點擊可單獨翻開此積木">
+          <div class="chunk-role">${c.role}</div>
+          <div class="chunk-word">${c.word}</div>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <div class="example-block-card">
+        <div class="example-label">
+          <span>${ex.title}</span>
+          <span style="font-size:0.95rem;color:#64748b;">💡 點擊任一彩色詞語積木可單獨揭曉</span>
+        </div>
+        <div class="chunks-row">${chunksHtml}</div>
+      </div>
+    `;
+  }).join("");
+
+  stage.innerHTML = `
+    <div class="stage-panel">
+      <div class="stage-header-bar">
+        <div>
+          <span class="para-badge ${p.badgeClass}" style="margin-bottom:8px;">📍 出處：第七課・${p.paragraphLabel}</span>
+          <div class="formula-banner">結構公式：${p.formula}</div>
+        </div>
+        <button class="ctrl-btn primary" onclick="switchTab('practice')">✍️ 前往此句型的 3 個情境造句 ➡</button>
+      </div>
+
+      <div class="context-quote-box">
+        📖 <strong>課文${p.paragraphLabel}原文對照：</strong>「${p.paragraphContext}」
+      </div>
+
+      <div class="mask-controls">
+        <span style="font-weight:900;font-size:calc(1.15rem * var(--font-scale));display:flex;align-items:center;color:#1e3a8a;">
+          🎭 課堂抽問遮罩模式：
+        </span>
+        <button class="mask-btn ${maskMode === 'none' ? 'active' : ''}" onclick="setMaskMode('none')">👁 全部顯示</button>
+        <button class="mask-btn ${maskMode === 'role' ? 'active' : ''}" onclick="setMaskMode('role')">❓ 遮住上方「詞性結構」（抽問詞性）</button>
+        <button class="mask-btn ${maskMode === 'word' ? 'active' : ''}" onclick="setMaskMode('word')">🔒 遮住下方「例句語詞」（填空抽考）</button>
+      </div>
+
+      ${examplesHtml}
+
+      <div class="analysis-note-box">
+        <div class="analysis-note-title">👩‍🏫 教學拆解重點說明</div>
+        <div class="analysis-note-body">${p.teachingNote}</div>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================
+   分頁 3：3×3 情境造句練習與參考答案
+   ========================================= */
+function renderPracticeTab() {
+  renderPatternSelectorBar("practice-selector-bar");
+  const p = currentLesson.patterns[currentPatternIdx];
+  const stage = document.getElementById("practice-stage-content");
+
+  const scenariosHtml = p.scenarios.map((sc, sIdx) => `
+    <div class="scenario-card">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="scenario-header">
+          <span class="scenario-badge">練習情境 ${sc.num}</span>
+        </div>
+        <div class="scenario-title">${sc.title}</div>
+        <div class="scenario-prompt">🎬 <strong>情境引導：</strong>${sc.prompt}</div>
+        <div class="vocab-hint-box">${sc.hint}</div>
+      </div>
+
+      <div>
+        <button class="reveal-ans-btn" onclick="toggleScenarioAns(${sIdx})" id="ans-btn-${sIdx}">
+          ✨ 點擊公佈參考答案
+        </button>
+        <div class="sample-answer-box" id="ans-box-${sIdx}" style="margin-top:12px;">
+          <div class="sample-ans-label">✅ 參考造句範本：</div>
+          <div class="sample-ans-main">${sc.answerMain}</div>
+          <div class="sample-ans-alt">${sc.answerAlt}</div>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  const savedList = customSentences[p.index] || [];
+  const savedHtml = savedList.length === 0
+    ? `<div style="color:#64748b;font-weight:700;font-size:1.15rem;">目前尚無紀錄，老師可在上方輸入學生發表的佳句，即時投影展示！</div>`
+    : savedList.map((text, i) => `
+        <div class="live-item">
+          <span>🌟 同學佳句 ${i + 1}：${text}</span>
+          <button class="ctrl-btn" style="padding:6px 12px;font-size:1rem;" onclick="deleteCustomSentence(${p.index}, ${i})">刪除</button>
+        </div>
+      `).join("");
+
+  stage.innerHTML = `
+    <div class="stage-panel">
+      <div class="stage-header-bar">
+        <div>
+          <span class="para-badge ${p.badgeClass}" style="margin-bottom:8px;">📍 對應課文：${p.paragraphLabel}</span>
+          <div class="formula-banner">${p.tag}：${p.formula}</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="ctrl-btn reveal" onclick="revealAllScenarios(true)">💡 一鍵展開全部參考答案</button>
+          <button class="ctrl-btn" onclick="revealAllScenarios(false)">🙈 全部收合</button>
+        </div>
+      </div>
+
+      <div class="context-quote-box" style="margin-bottom:10px;">
+        📌 <strong>課本範例句：</strong>「${p.originalSentence}」
+      </div>
+
+      <div class="scenarios-grid">
+        ${scenariosHtml}
+      </div>
+
+      <!-- 課堂學生造句即時紀錄板 -->
+      <div class="live-board-box">
+        <div class="live-board-title">
+          <span>📝 課堂互動白板：紀錄班上同學的造句（自動儲存於本機）</span>
+        </div>
+        <div class="live-input-row">
+          <input type="text" class="live-input" id="live-sentence-input"
+                 placeholder="在此輸入學生發表的造句，按 Enter 或點擊右側按鈕登上大螢幕..."
+                 onkeydown="if(event.key==='Enter') addCustomSentence(${p.index})">
+          <button class="ctrl-btn primary" onclick="addCustomSentence(${p.index})">➕ 登上佳句榜</button>
+        </div>
+        <div class="live-list" id="live-sentence-list">
+          ${savedHtml}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function toggleScenarioAns(sIdx) {
+  const box = document.getElementById(`ans-box-${sIdx}`);
+  const btn = document.getElementById(`ans-btn-${sIdx}`);
+  const isShowing = box.classList.toggle("show");
+  btn.textContent = isShowing ? "🙈 隱藏參考答案" : "✨ 點擊公佈參考答案";
+}
+
+function revealAllScenarios(show) {
+  [0, 1, 2].forEach(sIdx => {
+    const box = document.getElementById(`ans-box-${sIdx}`);
+    const btn = document.getElementById(`ans-btn-${sIdx}`);
+    if (box && btn) {
+      box.classList.toggle("show", show);
+      btn.textContent = show ? "🙈 隱藏參考答案" : "✨ 點擊公佈參考答案";
+    }
+  });
+}
+
+function addCustomSentence(patternIdx) {
+  const input = document.getElementById("live-sentence-input");
+  if (!input || !input.value.trim()) return;
+  if (!customSentences[patternIdx]) customSentences[patternIdx] = [];
+  customSentences[patternIdx].push(input.value.trim());
+  localStorage.setItem("chaohe_402_L7_sentences", JSON.stringify(customSentences));
+  renderPracticeTab();
+}
+
+function deleteCustomSentence(patternIdx, itemIdx) {
+  if (!customSentences[patternIdx]) return;
+  customSentences[patternIdx].splice(itemIdx, 1);
+  localStorage.setItem("chaohe_402_L7_sentences", JSON.stringify(customSentences));
+  renderPracticeTab();
+}
+
+/* =========================================
+   分頁 4：五題隨堂小測驗
+   ========================================= */
+function renderQuizTab() {
+  if (!currentLesson) return;
+  const q = currentLesson.quiz[currentQIndex];
+  const st = userQuizState[currentQIndex] || { selected: null, revealed: false };
+
+  document.getElementById("quiz-category-badge").textContent = q.section;
+
+  const dotsEl = document.getElementById("q-dots");
+  dotsEl.innerHTML = currentLesson.quiz.map((item, idx) => {
+    const s = userQuizState[idx];
+    let cls = "q-dot";
+    if (idx === currentQIndex) cls += " current";
+    if (s && s.selected !== null) {
+      cls += (s.selected === item.answer) ? " answered-correct" : " answered-wrong";
+    } else if (s && s.revealed) {
+      cls += " answered-correct";
+    }
+    return `<button class="${cls}" onclick="jumpToQuestion(${idx})">${idx + 1}</button>`;
+  }).join("");
+
+  document.getElementById("stage-stem").innerHTML = `<span class="question-num-pill">第 ${currentQIndex + 1} 題</span>${q.stem}`;
+
+  const optsEl = document.getElementById("stage-options");
+  optsEl.innerHTML = q.options.map((optText, optIdx) => {
+    let btnClass = "option-btn";
+    if (st.revealed) {
+      if (optIdx === q.answer) btnClass += " correct";
+      else if (st.selected === optIdx) btnClass += " wrong";
+    }
+    return `
+      <button class="${btnClass}" onclick="selectOption(${currentQIndex}, ${optIdx})">
+        <span class="opt-index">${CIRCLED_NUMS[optIdx]}</span>
+        <span>${optText}</span>
+      </button>
+    `;
+  }).join("");
+
+  const expBox = document.getElementById("stage-exp");
+  const expHeader = document.getElementById("stage-exp-header");
+  const expBody = document.getElementById("stage-exp-body");
+
+  if (st.revealed) {
+    expBox.classList.add("show");
+    if (st.selected === null) {
+      expHeader.textContent = `💡 正確答案：${CIRCLED_NUMS[q.answer]}`;
+    } else if (st.selected === q.answer) {
+      expHeader.textContent = `🎉 答對了！正確答案是 ${CIRCLED_NUMS[q.answer]}`;
+    } else {
+      expHeader.textContent = `❌ 再想一想！正確答案是 ${CIRCLED_NUMS[q.answer]}`;
+    }
+    expBody.textContent = q.explanation;
+  } else {
+    expBox.classList.remove("show");
+  }
+
+  document.getElementById("btn-prev").disabled = (currentQIndex === 0);
+  document.getElementById("btn-next").disabled = (currentQIndex === currentLesson.quiz.length - 1);
+}
+
+function selectOption(qIdx, optIdx) {
+  userQuizState[qIdx] = { selected: optIdx, revealed: true };
+  renderQuizTab();
+}
+
+function revealCurrentAnswer() {
+  const prev = userQuizState[currentQIndex] || { selected: null, revealed: false };
+  userQuizState[currentQIndex] = { selected: prev.selected, revealed: !prev.revealed };
+  renderQuizTab();
+}
+
+function resetCurrentQuestion() {
+  delete userQuizState[currentQIndex];
+  renderQuizTab();
+}
+
+function resetAllQuestions() {
+  userQuizState = {};
+  renderQuizTab();
+}
+
+function jumpToQuestion(idx) {
+  currentQIndex = idx;
+  renderQuizTab();
+}
+
+function prevQuestion() {
+  if (currentQIndex > 0) {
+    currentQIndex--;
+    renderQuizTab();
+  }
+}
+
+function nextQuestion() {
+  if (currentLesson && currentQIndex < currentLesson.quiz.length - 1) {
+    currentQIndex++;
+    renderQuizTab();
+  }
+}
+
+function adjustFontSize(delta) {
+  if (delta === 0) {
+    fontScale = 1;
+  } else {
+    fontScale = Math.min(1.4, Math.max(0.85, +(fontScale + delta).toFixed(2)));
+  }
+  document.documentElement.style.setProperty("--font-scale", fontScale);
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+function toggleHandoutModal(show) {
+  document.getElementById("handout-modal").classList.toggle("show", show);
+}
+
+// 鍵盤快捷鍵支援（當位於「五題隨堂小測驗」分頁時，支援 1~4 作答、左右鍵換題、空白鍵看解析）
+window.addEventListener("keydown", (e) => {
+  if (!currentLesson || currentTab !== "quiz") return;
+  if (e.target && e.target.tagName === "INPUT") return;
+  if (e.key === "ArrowRight" || e.key === "PageDown") {
+    e.preventDefault();
+    nextQuestion();
+  } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+    e.preventDefault();
+    prevQuestion();
+  } else if (["1", "2", "3", "4"].includes(e.key)) {
+    e.preventDefault();
+    selectOption(currentQIndex, parseInt(e.key, 10) - 1);
+  } else if (e.key === " ") {
+    e.preventDefault();
+    revealCurrentAnswer();
+  }
+});
+
+renderHome();
+</script>
+</body>
+</html>
