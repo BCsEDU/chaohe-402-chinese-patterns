@@ -407,8 +407,16 @@
     overflow: hidden;
     border: 2.5px solid #94a3b8;
     background: #fff;
-    min-width: 88px;
+    min-width: 96px;
     text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .syntax-chunk:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(15, 23, 42, 0.1);
   }
 
   .chunk-role {
@@ -417,6 +425,7 @@
     padding: 5px 10px;
     border-bottom: 2px solid inherit;
     white-space: nowrap;
+    position: relative;
   }
 
   .chunk-word {
@@ -427,6 +436,74 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+  }
+
+  /* 詞性遮蔽與語詞遮蔽狀態 */
+  .syntax-chunk.masked-role .chunk-role {
+    color: transparent !important;
+    background: repeating-linear-gradient(45deg, #cbd5e1, #cbd5e1 8px, #94a3b8 8px, #94a3b8 16px) !important;
+  }
+
+  .syntax-chunk.masked-role .chunk-role::after {
+    content: "❓ 點擊看詞性";
+    color: #0f172a;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 1px 8px;
+    border-radius: 6px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+  }
+
+  .syntax-chunk.masked-word .chunk-word {
+    color: transparent !important;
+    background: #e2e8f0 !important;
+  }
+
+  .syntax-chunk.masked-word .chunk-word::after {
+    content: "🔒 點擊看語詞";
+    color: #1e40af;
+    font-size: 1.05rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+  }
+
+  .mask-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .mask-btn {
+    padding: 7px 14px;
+    border-radius: 10px;
+    font-size: calc(1.05rem * var(--font-scale));
+    font-weight: 900;
+    border: 2px solid #cbd5e1;
+    background: #fff;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .mask-btn:hover {
+    border-color: #2563eb;
+    background: #eff6ff;
+  }
+
+  .mask-btn.active {
+    background: #f59e0b;
+    color: #fff;
+    border-color: #d97706;
   }
 
   .role-num { border-color: #3b82f6; }
@@ -864,7 +941,7 @@ function openLesson(id) {
       const chunksHtml = ex.chunks.map(c => {
         if (c.punct) return `<div class="role-punct">${c.punct}</div>`;
         return `
-          <div class="syntax-chunk ${c.cls}">
+          <div class="syntax-chunk ${c.cls}" onclick="revealChunk(this)" title="點擊可單獨翻開此積木">
             <div class="chunk-role">${c.role}</div>
             <div class="chunk-word">${c.word}</div>
           </div>
@@ -911,6 +988,14 @@ function openLesson(id) {
           📖 <strong>課文段落原句：</strong>「${p.paragraphContext}」
         </div>
 
+        <div class="mask-bar" id="mask-bar-${pIdx}">
+          <span style="font-weight:900;color:#1e3a8a;font-size:calc(1.1rem * var(--font-scale));">🎭 課堂抽問遮罩：</span>
+          <button class="mask-btn active" id="mask-none-${pIdx}" onclick="setSectionMask(${pIdx}, 'none')">👁 全部顯示</button>
+          <button class="mask-btn" id="mask-role-${pIdx}" onclick="setSectionMask(${pIdx}, 'role')">❓ 遮住上方「詞性結構」</button>
+          <button class="mask-btn" id="mask-word-${pIdx}" onclick="setSectionMask(${pIdx}, 'word')">🔒 遮住下方「例句語詞」</button>
+          <span style="font-size:0.95rem;color:#64748b;font-weight:700;">（遮蔽後點擊任一彩色積木可單獨翻開）</span>
+        </div>
+
         ${examplesHtml}
 
         <div class="practice-sub-header">
@@ -937,6 +1022,26 @@ function goHome() {
 
 function toggleFullText() {
   document.getElementById("fulltext-drawer").classList.toggle("open");
+}
+
+function setSectionMask(pIdx, mode) {
+  const section = document.getElementById(`pattern-${pIdx}`);
+  if (!section) return;
+
+  ["none", "role", "word"].forEach(m => {
+    const btn = document.getElementById(`mask-${m}-${pIdx}`);
+    if (btn) btn.classList.toggle("active", m === mode);
+  });
+
+  section.querySelectorAll(".syntax-chunk").forEach(chunk => {
+    chunk.classList.remove("masked-role", "masked-word");
+    if (mode === "role") chunk.classList.add("masked-role");
+    if (mode === "word") chunk.classList.add("masked-word");
+  });
+}
+
+function revealChunk(el) {
+  el.classList.remove("masked-role", "masked-word");
 }
 
 function toggleAns(pIdx, sIdx) {
